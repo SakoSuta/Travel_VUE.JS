@@ -209,7 +209,7 @@ data() {
     placeNameA: "",
     placeLatA: "",
     placeLngA: "",
-    placeVisitedA: "",
+    placeVisitedA: false,
 
     slug: "",
     places: [],
