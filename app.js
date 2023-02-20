@@ -78,8 +78,7 @@ const SlugLocat = {
     <div>
       <h2>All Places in {{locationName}} :</h2>
       <div>
-        <input type="checkbox" v-model="placeVisitedV" v-bind:checked="placeVisitedV === 1" @change="VisitedPlace">
-        <input type="text" v-for="place in places" v-model="placeID" :value="place.id">
+        <input type="checkbox" v-for="place in places" v-model="place.visited" v-bind:checked="place.visited === 1" @change="VisitedPlace(place.id, place.visited, place.name, place.lat, place.lng, place.slug)">
         <router-link v-for="place in places" :to="{ path: '/Places/updatePlace/' + place.id }">
 {{place.name}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         </router-link>
@@ -113,10 +112,6 @@ mounted() {
         this.locationID = json.location.id;
         this.locationName = json.location.name;
         this.places = json.place;
-        this.placeNameV = json.place.name;
-        this.placeLatV = json.place.lat;
-        this.placeLngV = json.place.lng;
-        this.placeVisitedV = json.place.visited;
     });
 },
 methods: {
@@ -157,25 +152,26 @@ methods: {
       console.log(json);
     });
   },
-  VisitedPlace() {
-    fetch(`http://localhost:8000/api/places/6`, {
+  VisitedPlace(placeID,Pvisited,placeNameV, placeLatV, placeLngV, slug) {
+    fetch(`http://localhost:8000/api/places/${placeID}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         location_id: this.locationID,
-        id: this.placeID,
-        name: this.placeNameV,
-        lat: this.placeLatV,
-        lng: this.placeLngV,
-        visited: this.placeVisitedV,
-        slug: this.slug
+        id: placeID,
+        name: placeNameV,
+        lat: placeLatV,
+        lng: placeLngV,
+        visited: Pvisited,
+        slug: slug
       })
     })
     .then(response => response.json())
     .then(json => {
       console.log(json);
+      console.log(Pvisited)
     });
   }
 },
@@ -189,11 +185,6 @@ data() {
     placeLatA: "",
     placeLngA: "",
     placeVisitedA: "",
-
-    placeNameV: this.placeNameV,
-    placeLatV: this.placeLatV,
-    placeLngV: this.placeLngA,
-    placeVisitedV: this.placeVisitedV,
 
     slug: "",
     places: [],
