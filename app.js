@@ -70,21 +70,31 @@ const SlugLocat = {
   template: `
     <div>
       <router-link to="/locations">Retour</router-link>
-      <form @submit.prevent="DeleteLocation">
-        <router-link :to="{ path: '/locations/updateLocation/' + locationID }">Update {{locationName}} ||</router-link>
-        <button type="submit">DELETE {{locationName}}</button>
+      <form>
+        <h1>{{locationName}}</h1>
+        <br>
+        <router-link :to="{ path: '/locations/updateLocation/' + locationID }">Update "{{locationName}}"</router-link>
+        <span> || </span>
+        <router-link to="/locations" v-on:click="DeleteLocation">DELETE "{{locationName}}"</router-link>
       </form>
     </div>
     <div>
       <h2>All Places in {{locationName}} :</h2>
-      <div>
-        <input type="checkbox" v-for="place in places" v-model="place.visited" v-bind:checked="place.visited === 1" @change="VisitedPlace(place.id, place.visited, place.name, place.lat, place.lng, place.slug)">
-        <router-link v-for="place in places" :to="{ path: '/Places/updatePlace/' + place.id }">
-{{place.name}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        </router-link>
+      <div v-for="place in places">
+          <h3># {{place.name}} #</h3>
+
+          <input type="checkbox" :checked="place.visited === 1" @change="place.visited = ($event.target.checked ? 1 : 0); VisitedPlace(place.id, place.visited, place.name, place.lat, place.lng, place.slug)">
+          <label>Visited</label>
+
+          <br>
+
+          <router-link :to="{ path: '/Places/updatePlace/' + place.id }">Update "{{place.name}}"</router-link>
+          <span> || </span>
+          <router-link to="/locations" v-on:click="DeletePlace(place.id)">DELETE "{{place.name}}"</router-link>
       </div>
           
     </div>
+    <h2>Did you need to add a new place to {{locationName}} ?</h2>
     <div>
       <form @submit.prevent="NewPlaces">
 
@@ -101,7 +111,7 @@ const SlugLocat = {
         <input type="checkbox" v-model="placeVisitedA">
         <label>Visited</label>
 
-        <button type="submit">New Place</button>
+        <br><button type="submit">New Place</button>
       </form>
     </div>`,
 mounted() {
@@ -123,6 +133,21 @@ methods: {
       },
       body: JSON.stringify({
         id: this.locationID,
+      })
+    })
+    .then(response => response.json())
+    .then(json => {
+      console.log(json);
+    });
+  },
+  DeletePlace(placeIDD) {
+    fetch(`http://localhost:8000/api/places/${placeIDD}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        id: this.placeIDD,
       })
     })
     .then(response => response.json())
