@@ -62,6 +62,4 @@ return {
 };
 }};
 
-
-
 export default UpdateLocation

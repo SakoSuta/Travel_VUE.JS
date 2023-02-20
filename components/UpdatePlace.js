@@ -1,3 +1,5 @@
+import router from '../app.js';
+
 const UpdatePlace = { 
 template: `
 <div>
@@ -14,12 +16,14 @@ template: `
         <input type="number" v-model="placeLngU">
 
         <select>
-        <option v-for="location in locations" v-model="location_id_PLA" value=location.id v-bind:selected="location.id === location_id_PLA">{{location.name}}</option>
+        <option v-for="location in locations" v-model="location_id_PLA" :selected="location.id === location_id_PLA" @change="location_id_PLA = location_id_PLA" >{{location.name}}</option>
         </select>
 
         <label>This place is ever been visited ?</label>
-        <input type="checkbox" v-model="placeVisitedU">
+        <input type="checkbox" v-model="placeVisitedU" :checked="placeVisitedU === 1" @change="placeVisitedU = ($event.target.checked ? 1 : 0)">
         <label>Visited</label>
+
+        <br>
 
         <button type="submit">Update Place</button>
     </form>
